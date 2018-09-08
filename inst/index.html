@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.6/svg.min.js"></script>
+<script src="https://rawgit.com/svgdotjs/svg.draggable.js/master/dist/svg.draggable.min.js"></script>
+<script src="http://svgjs.com/svg.draw.js/demo/svg.draw.min.js"></script>
+<script src="https://rawgit.com/svgdotjs/svg.panzoom.js/master/src/svg.panzoom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.connectable.js/2.0.1/svg.connectable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+function seq(from, to, by, length_out) {
+  if (by && length_out) {
+    throw("Too many arguments. You can only specify one of the third and the fourth argument.");
+  }
+  var res = [];
+  if (!to) {
+    to = from;
+    from = 1;
+  }
+  if (length_out) {
+    by = (to - from) / (length_out - 1);
+  }
+  for (var i = from; i <= to; i = i + by) {
+    res.push(i);
+  }
+  return res;
+}
+function round(x, scale) {
+  return Math.round(x / scale) * scale;
+}
+</script>
+</head>
+
+<body>
+<div class="graph"></div>
+
+<script>
+init_app = function(nodes_data, edges_data) {
+  // Setup parameters
+  var cw = 1000, ch = 1000;
+  var grid_size = 25;
+  var node_size = 30; // node radius
+
+  // Helper functions
+  function gridlines(canvas, cw, ch, grid_size) {
+    var grid = seq(0, cw, by = grid_size);
+    l1 = grid.map(
+      i => canvas.line(i, 0, i, 1000).stroke({width: 1, color:'#C8C8C8'})
+    );
+
+    var grid = seq(0, ch, by = grid_size);
+    l2 = grid.map(
+      i => canvas.line(0, i, 1000, i).stroke({width: 1, color:'#C8C8C8'})
+    );
+
+    return l1.concat(l2);
+  }
+
+  function parse_svg_transform(str) {
+    var coord = str.replace("(", ",").replace(")", "")
+    .split(",").splice(1, )
+    .map(parseFloat);
+    return coord;
+  }
+
+  function draw_points(canvas, data, paddings = {h:0, v:0}) {
+    function draw_point(datum) {
+      var y = canvas.group().translate(datum.x, datum.y);
+      y.circle(node_size).id("id_" + datum.id);
+      y.text(datum.label).dx(paddings.h).dy(paddings.v)
+      .font();
+
+      // Draggable and Snap to grid
+      y.draggable().on('dragend', function(e){
+        e.preventDefault();
+        var transform = this.node.getAttribute("transform")
+        var coordinates = parse_svg_transform(transform);
+        this.translate(
+          round(coordinates[4] + node_size / 2, grid_size) - node_size / 2,
+          round(coordinates[5] + node_size / 2, grid_size) - node_size / 2
+        );
+        update_edges();
+      });
+      return y;
+    }
+    return data.map(draw_point);
+  }
+
+  function draw_arrows(canvas, nodes_pointer, data) {
+    function get_node_from_id(id, nodes_pointer) {
+      return nodes_pointer[id];
+    }
+    function draw_arrow(row) {
+      var from_node  = get_node_from_id(row.from, nodes_pointer);
+      var to_node    = get_node_from_id(row.to, nodes_pointer);
+
+      var edge_setup = {
+        container: canvas.group(), markers: canvas.group(),
+        padEllipse: true};
+      var edge_color = "#5D4037";
+
+      var arrow = from_node.connectable(edge_setup, to_node)
+      .setLineColor(edge_color);
+      return from_node;
+    }
+    return data.map(draw_arrow);
+  }
+
+  function update_edges() {
+    function update_edge(x) {
+      x.cons.map(y => y.update());
+    }
+    svg_arr.map(update_edge);
+  }
+
+  // Setup and Draw on Canvas
+  var svg = new SVG(document.querySelector(".graph")).size(cw, ch);
+  svg.panZoom({zoomMin: 0.5, zoomMax: 20});
+  var grid = gridlines(svg, cw, ch, grid_size);
+  var svg_pts = draw_points(svg, nodes_data, {h:0, v: node_size});
+
+  // variable name 'svg_arr' is hard-coded, and hence is strict.
+  var svg_arr = draw_arrows(svg, svg_pts, edges_data);
+};
+
+//nodes_data = [{"id":0,"x":10,"y":10,"label":"function 1"},{"id":1,"x":100,"y":100,"label":"function 2"}];
+//edges_data = [{'from':0,'to':1}];
+//init_app(nodes_data, edges_data);
+
+$.when(
+  $.getJSON('assets/nodes_sample.json'),
+  $.getJSON('assets/edges_sample.json'),
+).done(
+  function(x, y) {
+    init_app(x[0], y[0]);
+  }
+)
+</script>
+</body>
+</html>
