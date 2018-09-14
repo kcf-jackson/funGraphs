@@ -121,7 +121,7 @@ init_app = function(nodes_data, edges_data) {
        .stroke({width: 1})
        .fill(datum.color);
       y.text(datum.label).dx(paddings.h).dy(paddings.v)
-       .font();
+       .font({anchor: 'middle'});
 
       // Draggable and Snap to grid
       y.draggable().on('dragend', function(e){
@@ -171,8 +171,6 @@ init_app = function(nodes_data, edges_data) {
   console.log(nodes_data);
   rng_x = extendrange(nodes_data.map(d => d.x), 0.25);
   rng_y = extendrange(nodes_data.map(d => d.y), 0.25);
-  console.log(rng_x);
-  console.log(rng_y);
   svg.size('100%', '100%').viewbox(
     rng_x[0], rng_y[0], diff(rng_x), diff(rng_y)
   );
