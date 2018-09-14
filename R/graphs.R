@@ -36,3 +36,12 @@ build_graph_array <- function(dir0) {
     contains = unlist(nl0, F)
   ))
 }
+
+
+# Exclude functions from certain packages (graph array)
+tidy_graph_array <- function(x, exclude = NULL, packages = NULL) {
+  pkg_fun <- unlist(x$func)
+  x$contains %<>%
+    purrr::map(~intersect(.x, pkg_fun))
+  x
+}
