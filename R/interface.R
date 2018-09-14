@@ -3,11 +3,12 @@
 #' @param browser Use "browser" or "viewer" to view the graph.
 #' @export
 start_app <- function(l0, browser = getOption("viewer")) {
+  l0 <- prepare_graph(l0)
   dir0 <- tempdir()
   asset_folder <- file.path(dir0, "assets")
   if (!file.exists(asset_folder)) dir.create(asset_folder)
   file.copy(
-    from = system.file("index.html", package = "itDepends"),
+    from = system.file("index.html", package = "funGraphs"),
     to = dir0
   )
   fname <- file.path(asset_folder, "nodes_sample.json")
@@ -16,6 +17,20 @@ start_app <- function(l0, browser = getOption("viewer")) {
   jsonlite::write_json(as.data.frame(l0$edges), fname_2)
   browseURL(file.path(dir0, "index.html"), browser = browser)
   dir0
+}
+
+
+prepare_graph <- function(l0) {
+  g <- igraph::graph_from_data_frame(l0$edges, vertices = l0$nodes)
+  layout <- igraph::layout_with_sugiyama(g)$layout
+  layout[,1] <- layout[,1] * 150
+  layout[,2] <- layout[,2] * 100
+  layout[,2] <- max(layout[,2]) - layout[,2]
+  layout <- round(layout / 25 + 15) * 25 - 15  # node size: 15, grid size: 25
+  l0 %>%
+    attach_ind() %>%
+    attach_coord(coord = layout) %>%
+    attach_color()
 }
 
 
