@@ -7,7 +7,7 @@
 #' Import functions
 #' @name import
 #' @importFrom stats setNames
-#' @importFrom utils find tail
+#' @importFrom utils find tail browseURL
 #' @importFrom magrittr %>% %<>%
 utils::globalVariables(".")
 NULL

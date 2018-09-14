@@ -6,7 +6,18 @@
 <script src="https://rawgit.com/svgdotjs/svg.panzoom.js/master/src/svg.panzoom.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.connectable.js/2.0.1/svg.connectable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+
+<body>
+<div style='display: flex'>
+  <button class="btn btn-light" onclick = "extract_svg()">Save</button>
+  <button class="btn btn-light" onclick = "load_svg()">Load</button>
+  <div id="textbox" style='overflow-x: auto; white-space: nowrap;'></div>
+</div>
+<div class="graph"></div>
 <script>
+// R style Javascript functions
 function seq(from, to, by, length_out) {
   if (by && length_out) {
     throw("Too many arguments. You can only specify one of the third and the fourth argument.");
@@ -24,32 +35,72 @@ function seq(from, to, by, length_out) {
   }
   return res;
 }
+
 function round(x, scale) {
   return Math.round(x / scale) * scale;
 }
+
+function range(x) {
+  return [Math.min(...x), Math.max(...x)];
+}
+
+function diff(x) {
+  res = [];
+  for (i = 1; i < x.length; i++) {
+    res.push(x[i] - x[i-1]);
+  }
+  return res;
+}
+
+function extendrange(x, f = 0.05) {
+var r = range(x);
+var ext = diff(r)[0] * f;
+return [r[0] - ext, r[1] + ext];
+}
+
+function sum(vec0) {
+  var x = 0;
+  for (var i = 0; i < vec0.length; i++) {
+      x = x + vec0[i];
+  }
+  return x;
+}
+
+function mean(vec0) {
+  return sum(vec0) / vec0.length;
+}
 </script>
-</head>
-
-<body>
-<div class="graph"></div>
-
+<script>
+function extract_svg() {
+  var el = document.getElementsByTagName("svg")[0].outerHTML;
+  document.getElementById("textbox").innerText = el;
+}
+function load_svg() {
+  var el = document.getElementsByTagName("svg")[0];
+  el.outerHTML = document.getElementById("textbox").innerText;
+}
+</script>
 <script>
 init_app = function(nodes_data, edges_data) {
   // Setup parameters
-  var cw = 1000, ch = 1000;
+  //var cw = 1000, ch = 1000;
   var grid_size = 25;
   var node_size = 30; // node radius
 
   // Helper functions
-  function gridlines(canvas, cw, ch, grid_size) {
-    var grid = seq(0, cw, by = grid_size);
+  function gridlines(canvas, cw, ch, grid_size, sx = 0, sy = 0) {
+    var grid = seq(sx, sx + cw, by = grid_size);
     l1 = grid.map(
-      i => canvas.line(i, 0, i, 1000).stroke({width: 1, color:'#C8C8C8'})
+      i => canvas.line(i, sy, i, sy + ch)
+                 .stroke({width: 1, color:'#C8C8C8'})
+                 .addClass("gridline")
     );
 
-    var grid = seq(0, ch, by = grid_size);
+    var grid = seq(sy, sy + ch, by = grid_size);
     l2 = grid.map(
-      i => canvas.line(0, i, 1000, i).stroke({width: 1, color:'#C8C8C8'})
+      i => canvas.line(sx, i, sx + cw, i)
+                 .stroke({width: 1, color:'#C8C8C8'})
+                 .addClass("gridline")
     );
 
     return l1.concat(l2);
@@ -65,9 +116,12 @@ init_app = function(nodes_data, edges_data) {
   function draw_points(canvas, data, paddings = {h:0, v:0}) {
     function draw_point(datum) {
       var y = canvas.group().translate(datum.x, datum.y);
-      y.circle(node_size).id("id_" + datum.id);
+      y.circle(node_size)
+       .id("id_" + datum.id)
+       .stroke({width: 1})
+       .fill(datum.color);
       y.text(datum.label).dx(paddings.h).dy(paddings.v)
-      .font();
+       .font();
 
       // Draggable and Snap to grid
       y.draggable().on('dragend', function(e){
@@ -113,9 +167,20 @@ init_app = function(nodes_data, edges_data) {
   }
 
   // Setup and Draw on Canvas
-  var svg = new SVG(document.querySelector(".graph")).size(cw, ch);
+  var svg = new SVG(document.querySelector(".graph"));
+  console.log(nodes_data);
+  rng_x = extendrange(nodes_data.map(d => d.x), 0.25);
+  rng_y = extendrange(nodes_data.map(d => d.y), 0.25);
+  console.log(rng_x);
+  console.log(rng_y);
+  svg.size('100%', '100%').viewbox(
+    rng_x[0], rng_y[0], diff(rng_x), diff(rng_y)
+  );
   svg.panZoom({zoomMin: 0.5, zoomMax: 20});
-  var grid = gridlines(svg, cw, ch, grid_size);
+  console.log(svg);
+  //var vbval = svg.node.viewBox.animVal;
+  //console.log(vbval);
+  var grid = gridlines(svg, 5000, 5000, grid_size, -2500, -2500);
   var svg_pts = draw_points(svg, nodes_data, {h:0, v: node_size});
 
   // variable name 'svg_arr' is hard-coded, and hence is strict.

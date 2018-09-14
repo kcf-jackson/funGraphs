@@ -1,12 +1,12 @@
 Package: itDepends
 Type: Package
 Title: Mapping out the dependencies between functions
-Version: 0.1.0
+Version: 0.1.1
 Author: Chun Fung (Jackson) Kwok
 Maintainer: Chun Fung (Jackson) Kwok <kcf.jackson@gmail.com>
-Description: A simple tool to map out the dependencies between functions
-    in a directory / package using `rlang`. This helps analyise packages and 
-    refactor code.
+Description: A simple tool to map out dependencies between functions
+    in a directory / package using `rlang`. This helps analyse packages 
+    and refactor code.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -14,5 +14,6 @@ RoxygenNote: 6.1.0
 Imports: purrr,
     rlang,
     magrittr,
-    visNetwork
+    jsonlite,
+    RColorBrewer
 Suggests: testthat

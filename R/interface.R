@@ -1,4 +1,8 @@
-start_app <- function(l0) {
+#' Plotting the package dependencies graph
+#' @param l0 A pairlist of edgelist and nodelist.
+#' @param browser Use "browser" or "viewer" to view the graph.
+#' @export
+start_app <- function(l0, browser = getOption("viewer")) {
   dir0 <- tempdir()
   asset_folder <- file.path(dir0, "assets")
   if (!file.exists(asset_folder)) dir.create(asset_folder)
@@ -10,7 +14,7 @@ start_app <- function(l0) {
   fname_2 <- file.path(asset_folder, "edges_sample.json")
   jsonlite::write_json(as.data.frame(l0$nodes), fname)
   jsonlite::write_json(as.data.frame(l0$edges), fname_2)
-  browseURL(file.path(dir0, "index.html"))
+  browseURL(file.path(dir0, "index.html"), browser = browser)
   dir0
 }
 
@@ -35,6 +39,19 @@ attach_ind <- function(l0) {
 attach_coord <- function(l0, coord) {
   l0$nodes %<>%
     cbind(x = coord[,1], y = coord[,2]) %>%
+    as.data.frame()
+  l0
+}
+
+
+attach_color <- function(l0, color) {
+  color_group <- l0$nodes$group
+  if (missing(color)) {
+    num_group <- length(unique(color_group))
+    color <- RColorBrewer::brewer.pal(num_group, 'Set3')
+  }
+  l0$nodes %<>%
+    cbind(color = rep(color, table(color_group))) %>%
     as.data.frame()
   l0
 }
