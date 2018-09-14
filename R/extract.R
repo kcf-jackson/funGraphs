@@ -33,12 +33,7 @@ get_all_calls <- function(call0) {
       purrr::map(as.list(call0[-1]), get_all_calls)
     ))
   }
-
+  # Include potential functions appeared as arguments
   if (is.null(call0) || is.list(call0)) return(NULL)
-
-  res <- as.character(call0)
-  fres <- find(res)
-  if (purrr::is_empty(fres) || (fres == ".GlobalEnv"))
-    return(NULL)
-  res
+  as.character(call0)
 }
