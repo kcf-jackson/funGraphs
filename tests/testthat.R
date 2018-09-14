@@ -1,4 +1,4 @@
 library(testthat)
-library(itDepends)
+library(funGraphs)
 
-test_check("itDepends")
+test_check("funGraphs")
