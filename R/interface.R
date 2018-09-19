@@ -1,10 +1,8 @@
 #' Plotting the package dependencies graph
 #' @param l0 A pairlist of edgelist and nodelist.
-#' @param layout (Optional) A 2-column matrix of nodes coordinates.
 #' @param browser Use "browser" or "viewer" to view the graph.
 #' @export
-start_app <- function(l0, layout, browser = getOption("viewer")) {
-  l0 <- prepare_graph(l0, layout)
+start_app <- function(l0, browser = getOption("viewer")) {
   dir0 <- tempdir()
   asset_folder <- file.path(dir0, "assets")
   if (!file.exists(asset_folder)) dir.create(asset_folder)
@@ -21,6 +19,10 @@ start_app <- function(l0, layout, browser = getOption("viewer")) {
 }
 
 
+#' Add plotting parameters to the graph data
+#' @param l0 A pairlist of edgelist and nodelist.
+#' @param layout (Optional) A 2-column matrix of nodes coordinates.
+#' @export
 prepare_graph <- function(l0, layout) {
   g <- igraph::graph_from_data_frame(l0$edges, vertices = l0$nodes)
   if (missing(layout)) {

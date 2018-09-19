@@ -6,8 +6,9 @@
 
 #' Import functions
 #' @name import
-#' @importFrom stats setNames
+#' @importFrom stats setNames dist
 #' @importFrom utils find tail browseURL
 #' @importFrom magrittr %>% %<>%
+#' @importFrom grDevices colorRampPalette
 utils::globalVariables(".")
 NULL

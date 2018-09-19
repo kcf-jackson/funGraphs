@@ -7,6 +7,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.connectable.js/2.0.1/svg.connectable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<style>
+html, body, .graph {
+  height:100%; width:100%; margin:0; padding:0;
+}
+</style>
 </head>
 
 <body>
@@ -169,8 +174,8 @@ init_app = function(nodes_data, edges_data) {
   // Setup and Draw on Canvas
   var svg = new SVG(document.querySelector(".graph"));
   console.log(nodes_data);
-  rng_x = extendrange(nodes_data.map(d => d.x), 0.25);
-  rng_y = extendrange(nodes_data.map(d => d.y), 0.25);
+  rng_x = extendrange(nodes_data.map(d => d.x), 0.1);
+  rng_y = extendrange(nodes_data.map(d => d.y), 0.1);
   svg.size('100%', '100%').viewbox(
     rng_x[0], rng_y[0], diff(rng_x), diff(rng_y)
   );
