@@ -1,9 +1,10 @@
 #' Plotting the package dependencies graph
 #' @param l0 A pairlist of edgelist and nodelist.
+#' @param layout (Optional) A 2-column matrix of nodes coordinates.
 #' @param browser Use "browser" or "viewer" to view the graph.
 #' @export
-start_app <- function(l0, browser = getOption("viewer")) {
-  l0 <- prepare_graph(l0)
+start_app <- function(l0, layout, browser = getOption("viewer")) {
+  l0 <- prepare_graph(l0, layout)
   dir0 <- tempdir()
   asset_folder <- file.path(dir0, "assets")
   if (!file.exists(asset_folder)) dir.create(asset_folder)
@@ -20,13 +21,15 @@ start_app <- function(l0, browser = getOption("viewer")) {
 }
 
 
-prepare_graph <- function(l0) {
+prepare_graph <- function(l0, layout) {
   g <- igraph::graph_from_data_frame(l0$edges, vertices = l0$nodes)
-  layout <- igraph::layout_with_sugiyama(g)$layout
-  layout[,1] <- layout[,1] * 150
-  layout[,2] <- layout[,2] * 100
-  layout[,2] <- max(layout[,2]) - layout[,2]
-  layout <- round(layout / 25 + 15) * 25 - 15  # node size: 15, grid size: 25
+  if (missing(layout)) {
+    layout <- igraph::layout_with_sugiyama(g)$layout
+    layout[,1] <- layout[,1] * 150
+    layout[,2] <- layout[,2] * 100
+    layout[,2] <- max(layout[,2]) - layout[,2]
+    layout <- round(layout / 25 + 15) * 25 - 15  # node size: 15, grid size: 25
+  }
   l0 %>%
     attach_ind() %>%
     attach_coord(coord = layout) %>%
@@ -63,7 +66,12 @@ attach_color <- function(l0, color) {
   color_group <- l0$nodes$group
   if (missing(color)) {
     num_group <- length(unique(color_group))
-    color <- RColorBrewer::brewer.pal(num_group, 'Set3')
+    if (num_group <= 12) {  # maximum number of colors in palette Set3
+      color <- RColorBrewer::brewer.pal(num_group, 'Set3')
+    } else {
+      color_fun <- colorRampPalette(RColorBrewer::brewer.pal(12, 'Set3'))
+      color <- color_fun(num_group)
+    }
   }
   l0$nodes %<>%
     cbind(color = rep(color, table(color_group))) %>%
