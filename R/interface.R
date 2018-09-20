@@ -21,21 +21,67 @@ start_app <- function(l0, browser = getOption("viewer")) {
 
 #' Add plotting parameters to the graph data
 #' @param l0 A pairlist of edgelist and nodelist.
-#' @param layout (Optional) A 2-column matrix of nodes coordinates.
+#' @param ... Extra scaling parameters to pass to `snap_to_grid`.
+#' @examples
+#' \dontrun{
+#' library(funGraphs)
+#' library(magrittr)
+#' build_graph_from_dir("R/") %>%
+#'   prepare_graph_Rgraphviz() %>%
+#'   start_app()
+#' }
 #' @export
-prepare_graph <- function(l0, layout) {
+prepare_graph_Rgraphviz <- function(l0, ...) {
+  g2 <- igraph::graph_from_data_frame(l0$edges, vertices = l0$nodes) %>%
+    igraph::igraph.to.graphNEL() %>%
+    Rgraphviz::layoutGraph()
+
+  normalise <- function(x) {
+    x <- as.numeric(x)
+    x / min(abs(x))
+  }
+  layout <- cbind(
+    x = normalise(g2@renderInfo@nodes$nodeX),
+    y = normalise(g2@renderInfo@nodes$nodeY)
+  )
+  print(layout)
+  prepare_graph(l0, layout, ...)
+}
+
+
+#' Add plotting parameters to the graph data
+#' @param l0 A pairlist of edgelist and nodelist.
+#' @param layout (Optional) A 2-column matrix of nodes coordinates.
+#' @param ... Extra scaling parameters to pass to `snap_to_grid`.
+#' @examples
+#' \dontrun{
+#' library(funGraphs)
+#' library(magrittr)
+#' build_graph_from_dir("R/") %>%
+#'   prepare_graph() %>%
+#'   start_app()
+#' }
+#' @export
+prepare_graph <- function(l0, layout, ...) {
   g <- igraph::graph_from_data_frame(l0$edges, vertices = l0$nodes)
   if (missing(layout)) {
     layout <- igraph::layout_with_sugiyama(g)$layout
-    layout[,1] <- layout[,1] * 150
-    layout[,2] <- layout[,2] * 100
-    layout[,2] <- max(layout[,2]) - layout[,2]
-    layout <- round(layout / 25 + 15) * 25 - 15  # node size: 15, grid size: 25
   }
+  layout <- snap_to_grid(layout, ...)
   l0 %>%
     attach_ind() %>%
     attach_coord(coord = layout) %>%
     attach_color()
+}
+
+
+snap_to_grid <- function(layout, scale_x = 150, scale_y = 100) {
+  node_size <- 25  # fixed in the Javascript
+  grid_size <- 15  # fixed in the Javascript
+  layout[,1] <- layout[,1] * scale_x
+  layout[,2] <- layout[,2] * scale_y
+  layout[,2] <- max(layout[,2]) - layout[,2]
+  round(layout / node_size + grid_size) * node_size - grid_size
 }
 
 

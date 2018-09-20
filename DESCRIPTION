@@ -16,5 +16,6 @@ Imports: purrr,
     magrittr,
     jsonlite,
     RColorBrewer,
-    igraph
+    igraph,
+    Rgraphviz
 Suggests: testthat

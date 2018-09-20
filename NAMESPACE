@@ -2,6 +2,7 @@
 
 export(build_graph_from_dir)
 export(prepare_graph)
+export(prepare_graph_Rgraphviz)
 export(start_app)
 importFrom(grDevices,colorRampPalette)
 importFrom(magrittr,"%<>%")
