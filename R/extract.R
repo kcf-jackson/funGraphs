@@ -22,6 +22,9 @@ get_calls_in_function <- function(fun0) {
   if (!is_fun(fun0)) return(NULL)
 
   fun_name <- as.character(fun0[[2]])
+  # safeguard against expression like 'name(x) <- y'
+  if (length(fun_name) > 1) return(NULL)
+
   fun_body <- fun0[[3]]
   get_all_calls(fun_body) %>%
     unlist() %>%   # remove nested structure
