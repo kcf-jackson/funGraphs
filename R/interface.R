@@ -41,8 +41,8 @@ prepare_graph_Rgraphviz <- function(l0, ...) {
     x / min(abs(x))
   }
   layout <- cbind(
-    x = normalise(g2@renderInfo@nodes$nodeX),
-    y = normalise(g2@renderInfo@nodes$nodeY)
+    x = normalise(g2@renderInfo@nodes$nodeX) / 2,
+    y = normalise(g2@renderInfo@nodes$nodeY) / 3
   )
   print(layout)
   prepare_graph(l0, layout, ...)
