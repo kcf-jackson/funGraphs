@@ -187,7 +187,9 @@ init_app = function(nodes_data, edges_data) {
   grid_rng_y = extendrange(nodes_data.map(d => d.y), 0.2);
   var grid = gridlines(
     svg, diff(grid_rng_x)[0], diff(grid_rng_y)[0],
-    grid_size, grid_rng_x[0], grid_rng_y[0]
+    grid_size,
+    round(grid_rng_x[0], grid_size),
+    round(grid_rng_y[0], grid_size)
   );
   var svg_pts = draw_points(svg, nodes_data, {h:0, v: node_size});
 
