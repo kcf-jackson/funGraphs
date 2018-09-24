@@ -1,13 +1,20 @@
 #' Build a function-dependencies graph for an R package / a directory
 #' @param dir0 A directory path.
+#' @param exclude_file A character vector of file names.
 #' @export
-build_graph_from_dir <- function(dir0) {
-  dir0 %>% get_files() %>% build_graph_from_files()
+build_graph_from_dir <- function(dir0, exclude_file = NULL) {
+  if (!is.null(exclude_file))
+    exclude_file <- file.path(dir0, exclude_file)
+
+  dir0 %>%
+    get_files() %>%
+    setdiff(exclude_file) %>%
+    build_graph_from_files()
 }
 
 
 #' Build a function-dependencies graph for a list of files
-#' @param file_ls Character vector of file paths.
+#' @param file_ls A character vector of file paths.
 #' @export
 build_graph_from_files <- function(file_ls) {
   g_arr <- file_ls %>% build_graph_array() %>% tidy_graph_array()

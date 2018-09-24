@@ -7,7 +7,7 @@
 build_graph_from_files(file_ls)
 }
 \arguments{
-\item{file_ls}{Character vector of file paths.}
+\item{file_ls}{A character vector of file paths.}
 }
 \description{
 Build a function-dependencies graph for a list of files
