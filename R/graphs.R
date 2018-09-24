@@ -1,8 +1,16 @@
-#' Build a function-dependencies graph for an R package
+#' Build a function-dependencies graph for an R package / a directory
 #' @param dir0 A directory path.
 #' @export
 build_graph_from_dir <- function(dir0) {
-  g_arr <- dir0 %>% build_graph_array() %>% tidy_graph_array()
+  dir0 %>% get_files() %>% build_graph_from_files()
+}
+
+
+#' Build a function-dependencies graph for a list of files
+#' @param file_ls Character vector of file paths.
+#' @export
+build_graph_from_files <- function(file_ls) {
+  g_arr <- file_ls %>% build_graph_array() %>% tidy_graph_array()
 
   cbind0 <- function(x, y) {
     if (purrr::is_empty(x) || purrr::is_empty(y)) return(NULL)
@@ -24,11 +32,11 @@ build_graph_from_dir <- function(dir0) {
 }
 
 
-build_graph_array <- function(dir0) {
-  nl0 <- dir0 %>%
-    get_files() %>%
+build_graph_array <- function(file_ls) {
+  get_filename_from_path <- . %>% strsplit("/") %>% unlist() %>% tail(1)
+  nl0 <- file_ls %>%
     purrr::map(get_calls_in_file) %>%
-    setNames(list.files(dir0))
+    setNames(purrr::map_chr(file_ls, get_filename_from_path))
 
   as.data.frame(cbind(
     file = rep(names(nl0), purrr::map_dbl(nl0, length)),

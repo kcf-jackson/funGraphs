@@ -1,7 +1,7 @@
 Package: funGraphs
 Type: Package
 Title: Mapping out the dependencies between functions
-Version: 0.1.3
+Version: 0.1.4
 Author: Chun Fung (Jackson) Kwok
 Maintainer: Chun Fung (Jackson) Kwok <kcf.jackson@gmail.com>
 Description: A simple tool to map out dependencies between functions

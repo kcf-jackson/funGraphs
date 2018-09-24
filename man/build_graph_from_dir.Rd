@@ -2,7 +2,7 @@
 % Please edit documentation in R/graphs.R
 \name{build_graph_from_dir}
 \alias{build_graph_from_dir}
-\title{Build a function-dependencies graph for an R package}
+\title{Build a function-dependencies graph for an R package / a directory}
 \usage{
 build_graph_from_dir(dir0)
 }
@@ -10,5 +10,5 @@ build_graph_from_dir(dir0)
 \item{dir0}{A directory path.}
 }
 \description{
-Build a function-dependencies graph for an R package
+Build a function-dependencies graph for an R package / a directory
 }
