@@ -9,7 +9,7 @@ build_graph_from_dir(dir0, exclude_file = NULL)
 \arguments{
 \item{dir0}{A directory path.}
 
-\item{exclude_file}{A character vector of file names.}
+\item{exclude_file}{A character vector of file paths.}
 }
 \description{
 Build a function-dependencies graph for an R package / a directory

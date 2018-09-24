@@ -8,7 +8,7 @@ start_app <- function(l0, browser = getOption("viewer")) {
   if (!file.exists(asset_folder)) dir.create(asset_folder)
   file.copy(
     from = system.file("index.html", package = "funGraphs"),
-    to = dir0
+    to = dir0, overwrite = T
   )
   fname <- file.path(asset_folder, "nodes_sample.json")
   fname_2 <- file.path(asset_folder, "edges_sample.json")
@@ -44,7 +44,6 @@ prepare_graph_Rgraphviz <- function(l0, ...) {
     x = normalise(g2@renderInfo@nodes$nodeX) / 2,
     y = normalise(g2@renderInfo@nodes$nodeY) / 3
   )
-  print(layout)
   prepare_graph(l0, layout, ...)
 }
 
