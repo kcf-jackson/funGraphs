@@ -5,15 +5,28 @@ A simple package to map out dependencies between functions in a directory / pack
 (The package works best for packages with < 50 functions. With larger packages, the diagram would contain too many nodes to be useful.)
 
 ---
+
 ### News
-1. [Hot-fix] Fixed problems with multiple functions having the same name, e.g. ".onLoad", in a package and function names with the disallowed symbol "|". See `?remove_duplicates` and `?remove_vbar` for more detail if you ran into troubles.
-2. Added a wrapper function to simplify usage (see Usage 1 below).
+#### 14 Oct, 2018
+- Added support to updating source graph from svg file: `update_graph_from_svg` (see Usage 1). 
+
+#### 13 Oct, 2018
+- [Hot-fix] Fixed problems with multiple functions having the same name, e.g. ".onLoad", in a package and function names having the disallowed symbol "|". See `?remove_duplicates` and `?remove_vbar` for more detail if you ran into troubles.
+- Added a wrapper function to simplify usage: `build_pkg_graph` (see Usage 1).
 
 --- 
+
 ### Usage 1
 ```
 # At the package directory
-funGraphs::build_pkg_graph()
+g <- funGraphs::build_pkg_graph()
+
+# It's unlikely the graph-arrangement algorithm can get to exactly what you want; you can move the nodes around as you see fit. Once you are done, you can click 'save', then copy the generated svg string into a file and save it as a SVG file, e.g. "test.svg". To load a SVG file, copy the svg string into the textbox provided, then click 'load'. Note that this is read-only. If you wish to continue modifying the graph, use 'update_graph_from_svg' instead:
+
+library(magrittr)
+g %>% 
+  update_graph_from_svg("test.svg") %>% 
+  start_app()
 ```
 
 ### Usage 2
@@ -37,7 +50,7 @@ g0 %>%
   start_app()                       # Display app
 ```
 
---- 
+---
 
 ### Example 1: R package 'funGraphs'
 From the diagram, we see that `build_graph_from_dir`, `start_app` and `prepare_graph_Rgraphviz`are at the top level. Indeed, they form the interface of the package. (Note that nodes with the same color are from the same file.)
