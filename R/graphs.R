@@ -8,11 +8,13 @@ build_pkg_graph <- function() {
     stop("I can't find the R folder, are you at the package directory?")
   }
 
-  build_graph_from_dir("R/") %>%
+  g <- build_graph_from_dir("R/") %>%
     remove_duplicates() %>%
     remove_vbar() %>%
-    prepare_graph_Rgraphviz() %>%
-    start_app()
+    prepare_graph_Rgraphviz()
+
+  start_app(g)
+  g
 }
 
 
