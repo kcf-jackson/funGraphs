@@ -14,6 +14,7 @@ remove_duplicates <- function(l0) {
   duplicates <- table(l0$nodes$id) >= 2
   dup_funs <- duplicates %>% which() %>% names()
 
+  if (length(dup_funs) == 0) return(l0)
   cat("Nodes removed from the graph:", dup_funs, "\n")
   l0$nodes <- l0$nodes[-which(l0$nodes$id %in% dup_funs), ]
   l0$edges <- l0$edges[-c(which(l0$edges$from %in% dup_funs),
@@ -40,6 +41,7 @@ remove_vbar <- function(l0) {
   edges_rm_ind <- c(which_contains_vbar(l0$edges$from),
                     which_contains_vbar(l0$edges$to))
 
+  if (length(nodes_rm_ind) == 0) return(l0)
   cat("Nodes removed from the graph:", l0$nodes$id[nodes_rm_ind], "\n")
   l0$nodes <- l0$nodes[-nodes_rm_ind, ]
   l0$edges <- l0$edges[-edges_rm_ind, ]
