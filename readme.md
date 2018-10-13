@@ -4,10 +4,19 @@ A simple package to map out dependencies between functions in a directory / pack
 
 (The package works best for packages with < 50 functions. With larger packages, the diagram would contain too many nodes to be useful.)
 
+---
+### News
+1. [Hot-fix] Fixed problems with multiple functions having the same name, e.g. ".onLoad", in a package and function names with the disallowed symbol "|". See `?remove_duplicates` and `?remove_vbar` for more detail if you ran into troubles.
+2. Added a wrapper function to simplify usage (see Usage 1 below).
+
 --- 
+### Usage 1
+```
+# At the package directory
+funGraphs::build_pkg_graph()
+```
 
-### Usage
-
+### Usage 2
 ```
 library(funGraphs)
 library(magrittr)

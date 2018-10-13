@@ -23,7 +23,7 @@ remove_duplicates <- function(l0) {
 
 
 #' [Hot-fix] Remove entries with "|" symbol
-#' @description igraphs does not allow the symbol "|" in a node's name.
+#' @description `igraph` does not allow the symbol "|" in a node's name.
 #' Entries with such symbol are removed.
 #' @param l0 A pairlist of edgelist and nodelist.
 #' @export
