@@ -1,3 +1,21 @@
+#' Build a graph for a package
+#' @description A one-line call to build a graph from a package.
+#' @details This function binds 'build_graph_from_dir', 'remove_duplicates',
+#' 'remove_vbar', 'prepare_graph_Rgraphviz' and 'start_app' into one call.
+#' @export
+build_pkg_graph <- function() {
+  if (!dir.exists("R/")) {
+    stop("I can't find the R folder, are you at the package directory?")
+  }
+
+  build_graph_from_dir("R/") %>%
+    remove_duplicates() %>%
+    remove_vbar() %>%
+    prepare_graph_Rgraphviz() %>%
+    start_app()
+}
+
+
 #' Build a function-dependencies graph for an R package / a directory
 #' @param dir0 A directory path.
 #' @param exclude_file A character vector of file paths.

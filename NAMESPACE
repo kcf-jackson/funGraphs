@@ -2,8 +2,11 @@
 
 export(build_graph_from_dir)
 export(build_graph_from_files)
+export(build_pkg_graph)
 export(prepare_graph)
 export(prepare_graph_Rgraphviz)
+export(remove_duplicates)
+export(remove_vbar)
 export(start_app)
 importFrom(grDevices,colorRampPalette)
 importFrom(magrittr,"%<>%")
