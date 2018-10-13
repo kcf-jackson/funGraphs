@@ -3,16 +3,17 @@
 #' @param svg_file character; path to the svg file.
 #' @export
 update_graph_from_svg <- function(l0, svg_file) {
-  coord <- new_coord(svg_file)
+  coord <- extract_coord_from_svg(svg_file)
   l0$nodes$x <- NULL
   l0$nodes$y <- NULL
-  l0 %>% dplyr::left_join(coord, by = "id")
+  l0$nodes %<>% dplyr::left_join(coord, by = "id")
+  l0
 }
 
 
 # Extract coordinates from SVG file
-# @example new_coord("test.svg")
-new_coord <- function(svg_file) {
+# @example extract_coord_from_svg("test.svg")
+extract_coord_from_svg <- function(svg_file) {
   dom <- xml2::read_html(svg_file)
 
   circles_dom <- dom %>%
@@ -21,13 +22,15 @@ new_coord <- function(svg_file) {
 
   new_coord <- circles_dom %>%
     Map(extract_xy, .) %>%
-    do.call(rbind, .)
+    do.call(rbind, .) %>%
+    as.data.frame()
   id <- circles_dom %>%
     rvest::html_children() %>%
     Filter(node_is_circle, .) %>%
-    Map(extract_circle_id, .)
+    Map(extract_circle_id, .) %>%
+    unlist()
 
-  cbind(id, new_coord) %>%
+  data.frame(id, new_coord, stringsAsFactors = F) %>%
     set_colnames(c("id", "x", "y"))
 }
 
