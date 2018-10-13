@@ -1,7 +1,7 @@
 Package: funGraphs
 Type: Package
 Title: Mapping out the dependencies between functions
-Version: 0.1.5
+Version: 0.1.6
 Author: Chun Fung (Jackson) Kwok
 Maintainer: Chun Fung (Jackson) Kwok <kcf.jackson@gmail.com>
 Description: A simple tool to map out dependencies between functions
@@ -17,5 +17,8 @@ Imports: purrr,
     jsonlite,
     RColorBrewer,
     igraph,
-    Rgraphviz
+    Rgraphviz,
+    dplyr,
+    rvest,
+    xml2
 Suggests: testthat

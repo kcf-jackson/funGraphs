@@ -31,7 +31,7 @@ extract_coord_from_svg <- function(svg_file) {
     unlist()
 
   data.frame(id, new_coord, stringsAsFactors = F) %>%
-    set_colnames(c("id", "x", "y"))
+    setNames(c("id", "x", "y"))
 }
 
 
