@@ -113,7 +113,9 @@ attach_color <- function(l0, color) {
   color_group <- l0$nodes$group
   if (missing(color)) {
     num_group <- length(unique(color_group))
-    if (num_group <= 12) {  # maximum number of colors in palette Set3
+    if (num_group < 3) {           # minimum number of colors in palette Set3
+      color <- c("#8DD3C7", "#FFFFB3")[seq(num_group)]
+    } else if (num_group <= 12) {  # maximum number of colors in palette Set3
       color <- RColorBrewer::brewer.pal(num_group, 'Set3')
     } else {
       color_fun <- colorRampPalette(RColorBrewer::brewer.pal(12, 'Set3'))
