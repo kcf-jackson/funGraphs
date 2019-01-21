@@ -7,6 +7,9 @@ A simple package to map out dependencies between functions in a directory / pack
 ---
 
 ### News
+#### 21 Jan, 2019
+- Added offline support. Previously the package uses the latest version of the svg.js components by default, but graphs fail to load after the recent update to v2.7 / 3.0. Now everything goes back to v2.6.6 and allows offline use. 
+ 
 #### 14 Oct, 2018
 - Added support to updating source graph from svg file: `update_graph_from_svg` (see Usage 1). 
 
