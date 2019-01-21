@@ -14,6 +14,11 @@ start_app <- function(l0, browser = getOption("viewer")) {
   fname_2 <- file.path(asset_folder, "edges_sample.json")
   jsonlite::write_json(as.data.frame(l0$nodes), fname)
   jsonlite::write_json(as.data.frame(l0$edges), fname_2)
+  file.copy(
+    from = system.file("lib/", package = "funGraphs"),
+    to = dir0,
+    recursive = T
+  )
   browseURL(file.path(dir0, "index.html"), browser = browser)
   dir0
 }

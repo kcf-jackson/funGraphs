@@ -1,16 +1,18 @@
 Package: funGraphs
 Type: Package
 Title: Mapping out the dependencies between functions
-Version: 0.1.6
+Version: 0.1.7
 Author: Chun Fung (Jackson) Kwok
 Maintainer: Chun Fung (Jackson) Kwok <kcf.jackson@gmail.com>
 Description: A simple tool to map out dependencies between functions
     in a directory / package using `rlang`. This helps analyse packages 
-    and refactor code.
+    and refactor code. A distinctive feature of the package is that it 
+    supports manual manipulation of the generated map, which then can be
+    saved and used as part of package documentation. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Imports: purrr,
     rlang,
     magrittr,
